@@ -1,54 +1,56 @@
-# React + TypeScript + Vite
+# ふぉくしーどAR
+ふぉくしーどがリアルイベントで配布する名刺をかざすと、ARコンテンツを楽しめるサイトです。
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🛠 環境構築
+開発には以下が必要です。
 
-Currently, two official plugins are available:
+- Node.js v22.14.0 以上
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+はじめにリポジトリをクローンし、依存関係をインストールしてください。
 
-## Expanding the ESLint configuration
+```sh
+git clone https://github.com/foxseedlab/foxseed-ar.git
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+cd foxseed-ar
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 💻 コマンド
+| コマンド | 説明 |
+| --- | --- |
+| `npm run dev` | 開発サーバーを起動 |
+| `npm run build` | TypeScriptのビルドとViteビルドを実行 |
+| `npm run preview` | ビルドしたファイルをプレビュー |
+| `npm run deploy` | ビルドして Cloudflare Workers にデプロイ |
+| `npm run cf-typegen` | Cloudflare Workers の型定義を生成 |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## 📁 リポジトリ構造
+```sh
+/
+├── dist/                  # ビルド出力先
+│   ├── client/            # クライアントサイドのビルド
+│   └── foxseed_ar/        # Cloudflare Workers のビルド
+├── public/                # 静的ファイル（画像など）
+├── src/                   # クライアントサイドのソースコード
+│   ├── App.tsx            # ルートアプリケーションコンポーネント
+│   ├── index.css          # グローバルCSS
+│   ├── main.tsx           # エントリーポイント
+│   └── vite-env.d.ts      # Vite環境の型定義
+├── worker/                # サーバーサイドのソースコード
+├── biome.jsonc            # Biome設定ファイル
+├── index.html             # HTMLエントリーポイント
+├── tsconfig.json          # TypeScript設定
+├── vite.config.ts         # Vite設定ファイル
+├── wrangler.jsonc         # Cloudflare Workers の設定
+└── package.json           # 依存関係とスクリプト
 ```
+
+## 🔀 ブランチ戦略
+[GitHub Flow](https://docs.github.com/en/get-started/quickstart/github-flow) を採用しています。
+
+<div align="center">
+<small>
+© 2025 ふぉくしーど
+</small>
+</div>
