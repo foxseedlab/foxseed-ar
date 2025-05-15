@@ -2,25 +2,38 @@ import { useEffect, useRef } from 'react';
 import { MindARThree } from 'mind-ar/dist/mindar-image-three.prod.js';
 import * as THREE from 'three';
 
-export default function AR({
-  markerNo,
-}: {
-  markerNo: number;
-}) {
-  const containerRef = useRef(null);
+const markerPath = '/foxseed-card.mind';
+
+export default function AR() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const mindarThreeRef = useRef<MindARThree | null>(null);
 
   useEffect(() => {
     const mindarThree = new MindARThree({
       container: containerRef.current,
-      imageTargetSrc: `/targets (${markerNo}).mind`,
-      // imageTargetSrc:
-      //   'https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.0/examples/image-tracking/assets/card-example/card.mind',
-      // filterMinCF: 1.0, // smoothing をほぼ OFF
-      // filterBeta: 10000, // レイテンシをさらに低減
-      // warmupTolerance: 1,
-      // missTolerance: 1,
+      imageTargetSrc: markerPath,
+
+      // OneEuroFilterのカットオフ周波数。値を大きくするとフィルタリングが弱まり、追従が速くなる
+      filterMinCF: 1.0,
+      // OneEuroFilterの速度係数(β)。値を大きくするとレイテンシがさらに減り、急激な動きへの追従が向上する
+      filterBeta: 10000,
+      // 連続してマーカー検出に成功するまでのフレーム数。小さいほど検出開始がほぼ即時に
+      warmupTolerance: 1,
+      // 連続してマーカー検出に失敗（ロスト）するまでのフレーム数。小さいほどロスト判定がほぼ即時に
+      missTolerance: 1,
+      // 使用する前面カメラのデバイスID。null/undefinedでデフォルトを使用
+      userDeviceId: null,
+      // 使用する背面カメラのデバイスID。null/undefinedでデフォルトを使用
+      environmentDeviceId: null,
+
+      // 読み込み中のUI表示。'yes'で表示、'no'で非表示
+      uiLoading: 'yes',
+      // スキャン中のUI表示。'yes'で表示、'no'で非表示
+      uiScanning: 'yes',
+      // エラー発生時のUI表示。'yes'で表示、'no'で非表示
+      uiError: 'yes',
     });
+
     mindarThreeRef.current = mindarThree;
 
     const { renderer, scene, camera } = mindarThree;
@@ -34,49 +47,15 @@ export default function AR({
     const plane = new THREE.Mesh(geometry, material);
     anchor.group.add(plane);
 
-    // THREE.WebGLRendererの警告に対応
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-    // レンダラーのピクセル比を最適化
-    // renderer.setPixelRatio(window.devicePixelRatio);
-    // renderer.setSize(window.innerWidth, window.innerHeight);
-
-    // カメラの解像度設定
-    const constraints = {
-      audio: false,
-      video: {
-        facingMode: { ideal: 'environment' },
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-        frameRate: { ideal: 30, max: 60 },
-      },
-    };
-
-    // カメラの初期化
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then((stream) => {
-        // MindARの初期化を待ってからvideo要素を設定
-        return mindarThree.start().then(() => {
-          if (mindarThree.video) {
-            mindarThree.video.srcObject = stream;
-            renderer.setAnimationLoop(() => {
-              renderer.render(scene, camera);
-            });
-          } else {
-            throw new Error('Video element not found');
-          }
-        });
-      })
-      .catch((error) => {
-        console.error('Error starting AR:', error);
-      });
+    mindarThree.start();
+    renderer.setAnimationLoop(() => {
+      renderer.render(scene, camera);
+    });
 
     return () => {
       if (mindarThreeRef.current) {
         renderer.setAnimationLoop(null);
         try {
-          // ストリームの停止を追加
           if (mindarThreeRef.current.video?.srcObject) {
             const tracks = (
               mindarThreeRef.current.video.srcObject as MediaStream
@@ -85,7 +64,7 @@ export default function AR({
               track.stop();
             }
           }
-          // MindARの停止処理を安全に行う
+
           if (mindarThreeRef.current.controller) {
             mindarThreeRef.current.stop();
           }
@@ -95,7 +74,7 @@ export default function AR({
         mindarThreeRef.current = null;
       }
     };
-  }, [markerNo]);
+  }, []);
 
   return <div style={{ width: '100%', height: '100%' }} ref={containerRef} />;
 }
