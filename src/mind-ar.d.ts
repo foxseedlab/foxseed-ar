@@ -34,6 +34,16 @@ declare module 'mind-ar/dist/mindar-image-three.prod.js' {
     stopProcessVideo(): void;
   }
 
+  interface Anchor {
+    group: THREE.Group;
+    targetIndex: number;
+    onTargetFound: (() => void) | null;
+    onTargetLost: (() => void) | null;
+    onTargetUpdate: (() => void) | null;
+    css: boolean;
+    visible: boolean;
+  }
+
   export class MindARThree {
     constructor(options: {
       container: HTMLElement | null;
@@ -69,15 +79,7 @@ declare module 'mind-ar/dist/mindar-image-three.prod.js' {
       setSize(width: number, height: number): void;
     };
     camera: THREE.PerspectiveCamera;
-    anchors: Array<{
-      group: THREE.Group;
-      targetIndex: number;
-      onTargetFound: (() => void) | null;
-      onTargetLost: (() => void) | null;
-      onTargetUpdate: (() => void) | null;
-      css: boolean;
-      visible: boolean;
-    }>;
+    anchors: Array<Anchor>;
     video: HTMLVideoElement;
     controller: Controller;
     postMatrixs: THREE.Matrix4[];
@@ -86,24 +88,8 @@ declare module 'mind-ar/dist/mindar-image-three.prod.js' {
     stop(): void;
     switchCamera(): void;
     resize(): void;
-    addAnchor(targetIndex: number): {
-      group: THREE.Group;
-      targetIndex: number;
-      onTargetFound: null;
-      onTargetLost: null;
-      onTargetUpdate: null;
-      css: boolean;
-      visible: boolean;
-    };
-    addCSSAnchor(targetIndex: number): {
-      group: THREE.Group;
-      targetIndex: number;
-      onTargetFound: null;
-      onTargetLost: null;
-      onTargetUpdate: null;
-      css: boolean;
-      visible: boolean;
-    };
+    addAnchor(targetIndex: number): Anchor;
+    addCSSAnchor(targetIndex: number): Anchor;
 
     private _startVideo(): Promise<void>;
     private _startAR(): Promise<void>;

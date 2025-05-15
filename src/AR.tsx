@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MindARThree } from 'mind-ar/dist/mindar-image-three.prod.js';
 import * as THREE from 'three';
 
@@ -7,6 +7,7 @@ const markerPath = '/foxseed-card.mind';
 export default function AR() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mindarThreeRef = useRef<MindARThree | null>(null);
+  const [isMarkerFound, setIsMarkerFound] = useState(false);
 
   useEffect(() => {
     const mindarThree = new MindARThree({
@@ -38,6 +39,16 @@ export default function AR() {
 
     const { renderer, scene, camera } = mindarThree;
     const anchor = mindarThree.addAnchor(0);
+
+    // マーカー検出時のイベントリスナーを追加
+    anchor.onTargetFound = () => {
+      setIsMarkerFound(true);
+    };
+
+    anchor.onTargetLost = () => {
+      setIsMarkerFound(false);
+    };
+
     const geometry = new THREE.PlaneGeometry(1, 0.55);
     const material = new THREE.MeshBasicMaterial({
       color: 0x00ffff,
@@ -76,5 +87,26 @@ export default function AR() {
     };
   }, []);
 
-  return <div style={{ width: '100%', height: '100%' }} ref={containerRef} />;
+  return (
+    <>
+      <div style={{ width: '100%', height: '100%' }} ref={containerRef} />
+      {isMarkerFound && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '5px',
+            zIndex: 1000,
+          }}
+        >
+          マーカーが反応しました
+        </div>
+      )}
+    </>
+  );
 }
