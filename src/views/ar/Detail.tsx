@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useEffect, useState, useRef } from 'react';
+import { TypingEffect } from '../../components/TypingEffect';
 
 type Props = {
   isLoading: boolean;
@@ -96,7 +97,9 @@ function FoundCard({ isTouching }: { isTouching: boolean }) {
           ふぉくしーど
         </span>
       </h2>
-      <div className="mt-4 whitespace-pre-line">{message}</div>
+      <div className="mt-4 whitespace-pre-line">
+        <TypingEffect text={message} duration={0.1} delay={0.05} />
+      </div>
     </div>
   );
 }
