@@ -17,6 +17,9 @@ export default function AR() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mindarThreeRef = useRef<MindARThree | null>(null);
   const [isMarkerFound, setIsMarkerFound] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isScanning, setIsScanning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const textRef = useRef<THREE.Group | null>(null);
   const imageRef = useRef<THREE.Group | null>(null);
 
@@ -39,14 +42,33 @@ export default function AR() {
       environmentDeviceId: null,
 
       // 読み込み中のUI表示。'yes'で表示、'no'で非表示
-      uiLoading: 'yes',
+      uiLoading: 'no',
       // スキャン中のUI表示。'yes'で表示、'no'で非表示
-      uiScanning: 'yes',
+      uiScanning: 'no',
       // エラー発生時のUI表示。'yes'で表示、'no'で非表示
-      uiError: 'yes',
+      uiError: 'no',
     });
 
     mindarThreeRef.current = mindarThree;
+
+    // イベントリスナーの設定
+    mindarThree.onLoading = () => {
+      setIsLoading(true);
+      setIsScanning(false);
+      setError(null);
+    };
+
+    mindarThree.onScanning = () => {
+      setIsLoading(false);
+      setIsScanning(true);
+      setError(null);
+    };
+
+    mindarThree.onError = (error: Error) => {
+      setIsLoading(false);
+      setIsScanning(false);
+      setError(error.message);
+    };
 
     const { renderer, scene, camera } = mindarThree;
     const anchor = mindarThree.addAnchor(0);
@@ -245,8 +267,26 @@ export default function AR() {
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.0); // 環境光を強める
     anchor.group.add(ambientLight);
 
+    // マーカーの読み込み完了時の処理
+    mindarThree
+      .start()
+      .then(() => {
+        setIsLoading(false);
+        setIsScanning(true);
+        renderer.setAnimationLoop(() => {
+          TWEEN.update();
+          renderer.render(scene, camera);
+        });
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+
     anchor.onTargetFound = () => {
       setIsMarkerFound(true);
+      setIsLoading(false);
+      setIsScanning(false);
+      setError(null);
       if (imageRef.current) {
         imageRef.current.visible = true;
         imageRef.current.scale.set(0, 0, 0);
@@ -270,6 +310,7 @@ export default function AR() {
 
     anchor.onTargetLost = () => {
       setIsMarkerFound(false);
+      setIsScanning(true);
       if (textRef.current) {
         textRef.current.visible = false;
       }
@@ -277,12 +318,6 @@ export default function AR() {
         imageRef.current.visible = false;
       }
     };
-
-    mindarThree.start();
-    renderer.setAnimationLoop(() => {
-      TWEEN.update();
-      renderer.render(scene, camera);
-    });
 
     return () => {
       if (mindarThreeRef.current) {
@@ -311,6 +346,57 @@ export default function AR() {
   return (
     <>
       <div style={{ width: '100%', height: '100%' }} ref={containerRef} />
+      {isLoading && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            color: 'white',
+            padding: '20px',
+            borderRadius: '5px',
+            zIndex: 1000,
+          }}
+        >
+          読み込み中...
+        </div>
+      )}
+      {isScanning && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            color: 'white',
+            padding: '20px',
+            borderRadius: '5px',
+            zIndex: 1000,
+          }}
+        >
+          マーカーをスキャン中...
+        </div>
+      )}
+      {error && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'rgba(255, 0, 0, 0.7)',
+            color: 'white',
+            padding: '20px',
+            borderRadius: '5px',
+            zIndex: 1000,
+          }}
+        >
+          エラー: {error}
+        </div>
+      )}
       {isMarkerFound && (
         <div
           style={{

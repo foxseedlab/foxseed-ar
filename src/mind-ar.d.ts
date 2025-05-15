@@ -84,6 +84,10 @@ declare module 'mind-ar/dist/mindar-image-three.prod.js' {
     controller: Controller;
     postMatrixs: THREE.Matrix4[];
 
+    onLoading?: () => void;
+    onScanning?: () => void;
+    onError?: (error: Error) => void;
+
     start(): Promise<void>;
     stop(): void;
     switchCamera(): void;
