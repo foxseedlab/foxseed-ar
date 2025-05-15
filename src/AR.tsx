@@ -273,14 +273,16 @@ export default function AR() {
       .then(() => {
         setIsLoading(false);
         setIsScanning(true);
-        renderer.setAnimationLoop(() => {
-          TWEEN.update();
-          renderer.render(scene, camera);
-        });
       })
       .catch((error) => {
         setError(error.message);
       });
+
+    // レンダリングループの設定
+    renderer.setAnimationLoop(() => {
+      TWEEN.update();
+      renderer.render(scene, camera);
+    });
 
     anchor.onTargetFound = () => {
       setIsMarkerFound(true);
