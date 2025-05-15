@@ -3,6 +3,8 @@ import useARSetup from './useARSetup';
 import useTextSetup from './useTextSetup';
 import useImageSetup from './useImageSetup';
 import AROverlay from './AROverlay';
+import Searching from './Searching';
+import Detail from './Detail';
 
 type Props = {
   guestName: string;
@@ -65,13 +67,20 @@ export default function View({ guestName }: Props) {
   return (
     <>
       <div style={{ width: '100%', height: '100%' }} ref={containerRef} />
-      <AROverlay
+      {isScanning && <Searching />}
+      <Detail
+        isLoading={isLoading}
+        isScanning={isScanning}
+        isMarkerFound={isMarkerFound}
+        isTouching={isTouching}
+      />
+      {/* <AROverlay
         isLoading={isLoading}
         isScanning={isScanning}
         error={error}
         isMarkerFound={isMarkerFound}
         isTouching={isTouching}
-      />
+      /> */}
     </>
   );
 }
