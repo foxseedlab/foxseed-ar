@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { MindARThree } from 'mind-ar/dist/mindar-image-three.prod.js';
 import * as THREE from 'three';
 
-export default function AR({
+export default function AR2({
   markerNo,
 }: {
   markerNo: number;
@@ -14,12 +14,10 @@ export default function AR({
     const mindarThree = new MindARThree({
       container: containerRef.current,
       imageTargetSrc: `/targets (${markerNo}).mind`,
-      // imageTargetSrc:
-      //   'https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.0/examples/image-tracking/assets/card-example/card.mind',
-      // filterMinCF: 1.0, // smoothing をほぼ OFF
-      // filterBeta: 10000, // レイテンシをさらに低減
-      // warmupTolerance: 1,
-      // missTolerance: 1,
+      filterMinCF: 1.0, // smoothing をほぼ OFF
+      filterBeta: 10000, // レイテンシをさらに低減
+      warmupTolerance: 1,
+      missTolerance: 1,
     });
     mindarThreeRef.current = mindarThree;
 
@@ -34,43 +32,10 @@ export default function AR({
     const plane = new THREE.Mesh(geometry, material);
     anchor.group.add(plane);
 
-    // THREE.WebGLRendererの警告に対応
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-    // レンダラーのピクセル比を最適化
-    // renderer.setPixelRatio(window.devicePixelRatio);
-    // renderer.setSize(window.innerWidth, window.innerHeight);
-
-    // カメラの解像度設定
-    const constraints = {
-      audio: false,
-      video: {
-        facingMode: { ideal: 'environment' },
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-        frameRate: { ideal: 30, max: 60 },
-      },
-    };
-
-    // カメラの初期化
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then((stream) => {
-        // MindARの初期化を待ってからvideo要素を設定
-        return mindarThree.start().then(() => {
-          if (mindarThree.video) {
-            mindarThree.video.srcObject = stream;
-            renderer.setAnimationLoop(() => {
-              renderer.render(scene, camera);
-            });
-          } else {
-            throw new Error('Video element not found');
-          }
-        });
-      })
-      .catch((error) => {
-        console.error('Error starting AR:', error);
-      });
+    mindarThree.start();
+    renderer.setAnimationLoop(() => {
+      renderer.render(scene, camera);
+    });
 
     return () => {
       if (mindarThreeRef.current) {
