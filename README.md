@@ -35,7 +35,7 @@ npm install
 ├── src/                   # クライアントサイドのソースコード
 │   ├── App.tsx            # ルートアプリケーションコンポーネント
 │   ├── index.css          # グローバルCSS
-│   ├── main.tsx           # エントリーポイント
+│   ├── index.tsx          # エントリーポイント
 │   └── vite-env.d.ts      # Vite環境の型定義
 ├── worker/                # サーバーサイドのソースコード
 ├── biome.jsonc            # Biome設定ファイル
