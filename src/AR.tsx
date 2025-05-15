@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { MindARThree } from 'mind-ar/dist/mindar-image-three.prod.js';
 import * as THREE from 'three';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
@@ -22,6 +22,65 @@ export default function AR() {
   const [error, setError] = useState<string | null>(null);
   const textRef = useRef<THREE.Group | null>(null);
   const imageRef = useRef<THREE.Group | null>(null);
+  const [isTouching, setIsTouching] = useState(false);
+  const particlesRef = useRef<THREE.Points | null>(null);
+
+  // パーティクルエフェクトの作成
+  const createParticleEffect = useCallback((position: THREE.Vector3) => {
+    const particleCount = 50;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      positions[i3] = position.x;
+      positions[i3 + 1] = position.y;
+      positions[i3 + 2] = position.z;
+
+      // パステルカラーのランダムな色
+      colors[i3] = Math.random() * 0.5 + 0.5; // ピンク系
+      colors[i3 + 1] = Math.random() * 0.5 + 0.5; // 黄色系
+      colors[i3 + 2] = Math.random() * 0.5 + 0.5; // 水色系
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: 0.05,
+      vertexColors: true,
+      transparent: true,
+      opacity: 1,
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    particlesRef.current = particles;
+    return particles;
+  }, []);
+
+  // パーティクルのアニメーション
+  const animateParticles = useCallback(() => {
+    if (!particlesRef.current) return;
+
+    const positions = particlesRef.current.geometry.attributes.position.array;
+    const time = Date.now() * 0.001;
+
+    for (let i = 0; i < positions.length; i += 3) {
+      positions[i] += Math.sin(time + i) * 0.01;
+      positions[i + 1] += Math.cos(time + i) * 0.01;
+      positions[i + 2] += Math.sin(time * 0.5 + i) * 0.01;
+    }
+
+    particlesRef.current.geometry.attributes.position.needsUpdate = true;
+    const material = particlesRef.current.material as THREE.PointsMaterial;
+    material.opacity -= 0.01;
+
+    if (material.opacity <= 0) {
+      particlesRef.current.parent?.remove(particlesRef.current);
+      particlesRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     const mindarThree = new MindARThree({
@@ -278,9 +337,10 @@ export default function AR() {
         setError(error.message);
       });
 
-    // レンダリングループの設定
+    // レンダリングループの設定を更新
     renderer.setAnimationLoop(() => {
       TWEEN.update();
+      animateParticles();
       renderer.render(scene, camera);
     });
 
@@ -321,7 +381,45 @@ export default function AR() {
       }
     };
 
+    // タッチイベントの追加
+    const handleTouch = (event: TouchEvent) => {
+      if (!imageRef.current || !camera) return;
+
+      const touch = event.touches[0];
+      const mouse = new THREE.Vector2(
+        (touch.clientX / window.innerWidth) * 2 - 1,
+        -(touch.clientY / window.innerHeight) * 2 + 1,
+      );
+
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+
+      const intersects = raycaster.intersectObject(
+        imageRef.current.children[1],
+        true,
+      );
+
+      if (intersects.length > 0) {
+        setIsTouching(true);
+        const particleEffect = createParticleEffect(intersects[0].point);
+        anchor.group.add(particleEffect);
+
+        // キャラクターのスケールアニメーション
+        new TWEEN.Tween(imageRef.current.scale)
+          .to({ x: 1.2, y: 1.2, z: 1.2 }, 200)
+          .easing(TWEEN.Easing.Quadratic.Out)
+          .yoyo(true)
+          .repeat(1)
+          .start();
+
+        setTimeout(() => setIsTouching(false), 500);
+      }
+    };
+
+    window.addEventListener('touchstart', handleTouch);
+
     return () => {
+      window.removeEventListener('touchstart', handleTouch);
       if (mindarThreeRef.current) {
         renderer.setAnimationLoop(null);
         try {
@@ -343,7 +441,7 @@ export default function AR() {
         mindarThreeRef.current = null;
       }
     };
-  }, []);
+  }, [createParticleEffect, animateParticles]);
 
   return (
     <>
@@ -416,6 +514,35 @@ export default function AR() {
           マーカーが反応しました
         </div>
       )}
+      {isTouching && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            color: 'white',
+            padding: '15px 30px',
+            borderRadius: '10px',
+            fontSize: '1.2em',
+            fontWeight: 'bold',
+            zIndex: 1000,
+            animation: 'fadeInOut 0.5s ease-in-out',
+          }}
+        >
+          タッチされました！
+        </div>
+      )}
+      <style>
+        {`
+          @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+          }
+        `}
+      </style>
     </>
   );
 }
