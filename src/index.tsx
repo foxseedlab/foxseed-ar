@@ -11,6 +11,15 @@ if (!app) {
 
 createRoot(app).render(
   <StrictMode>
+    <link
+      rel="preload"
+      href="/PretendardJPVariable.woff2"
+      as="font"
+      type="font/woff2"
+      fetchPriority="high"
+      crossOrigin="anonymous"
+    />
+
     <App />
   </StrictMode>,
 );
