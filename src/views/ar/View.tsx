@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MindARThree } from 'mind-ar/dist/mindar-image-three.prod.js';
 import * as THREE from 'three';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
@@ -12,8 +12,14 @@ const characterImagePath = '/jumpout-foxseed.webp';
 
 const textColor = 0xffffff;
 const textSpecularColor = 0x13240f;
+const honorific = 'さん';
 
-export default function AR() {
+type Props = {
+  guestName: string;
+  goEntrance: () => void;
+};
+
+export default function View({ guestName }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mindarThreeRef = useRef<MindARThree | null>(null);
   const [isMarkerFound, setIsMarkerFound] = useState(false);
@@ -23,64 +29,6 @@ export default function AR() {
   const textRef = useRef<THREE.Group | null>(null);
   const imageRef = useRef<THREE.Group | null>(null);
   const [isTouching, setIsTouching] = useState(false);
-  const particlesRef = useRef<THREE.Points | null>(null);
-
-  // パーティクルエフェクトの作成
-  const createParticleEffect = useCallback((position: THREE.Vector3) => {
-    const particleCount = 50;
-    const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount; i++) {
-      const i3 = i * 3;
-      positions[i3] = position.x;
-      positions[i3 + 1] = position.y;
-      positions[i3 + 2] = position.z;
-
-      // パステルカラーのランダムな色
-      colors[i3] = Math.random() * 0.5 + 0.5; // ピンク系
-      colors[i3 + 1] = Math.random() * 0.5 + 0.5; // 黄色系
-      colors[i3 + 2] = Math.random() * 0.5 + 0.5; // 水色系
-    }
-
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const material = new THREE.PointsMaterial({
-      size: 0.05,
-      vertexColors: true,
-      transparent: true,
-      opacity: 1,
-    });
-
-    const particles = new THREE.Points(geometry, material);
-    particlesRef.current = particles;
-    return particles;
-  }, []);
-
-  // パーティクルのアニメーション
-  const animateParticles = useCallback(() => {
-    if (!particlesRef.current) return;
-
-    const positions = particlesRef.current.geometry.attributes.position.array;
-    const time = Date.now() * 0.001;
-
-    for (let i = 0; i < positions.length; i += 3) {
-      positions[i] += Math.sin(time + i) * 0.01;
-      positions[i + 1] += Math.cos(time + i) * 0.01;
-      positions[i + 2] += Math.sin(time * 0.5 + i) * 0.01;
-    }
-
-    particlesRef.current.geometry.attributes.position.needsUpdate = true;
-    const material = particlesRef.current.material as THREE.PointsMaterial;
-    material.opacity -= 0.01;
-
-    if (material.opacity <= 0) {
-      particlesRef.current.parent?.remove(particlesRef.current);
-      particlesRef.current = null;
-    }
-  }, []);
 
   useEffect(() => {
     const mindarThree = new MindARThree({
@@ -162,7 +110,7 @@ export default function AR() {
       };
 
       // 1行目のテキスト
-      const textGeometry1 = new TextGeometry('ふぉくしーどさん', {
+      const textGeometry1 = new TextGeometry(guestName + honorific, {
         font: font,
         size: 0.2,
         // @ts-ignore 新フィールド名の depth にすると深すぎて表示がおかしくなる
@@ -340,7 +288,6 @@ export default function AR() {
     // レンダリングループの設定を更新
     renderer.setAnimationLoop(() => {
       TWEEN.update();
-      animateParticles();
       renderer.render(scene, camera);
     });
 
@@ -401,8 +348,6 @@ export default function AR() {
 
       if (intersects.length > 0) {
         setIsTouching(true);
-        const particleEffect = createParticleEffect(intersects[0].point);
-        anchor.group.add(particleEffect);
 
         // キャラクターのスケールアニメーション
         new TWEEN.Tween(imageRef.current.scale)
@@ -441,7 +386,7 @@ export default function AR() {
         mindarThreeRef.current = null;
       }
     };
-  }, [createParticleEffect, animateParticles]);
+  }, [guestName]);
 
   return (
     <>

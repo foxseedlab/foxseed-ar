@@ -1,64 +1,36 @@
 import { useState } from 'react';
-import AR from './AR';
+import EntranceView from './views/entrance/View';
+import ARView from './views/ar/View';
 
-function App() {
-  const [started, setStarted] = useState<'three' | null>(null);
+export default function Router() {
+  const [view, setView] = useState<'entrance' | 'ar'>('entrance');
+  const [guestName, setGuestName] = useState('');
 
-  const handleStop = () => {
-    setStarted(null);
-    const overlays = document.querySelectorAll('.mindar-ui-overlay');
-    for (const element of overlays) {
-      element.remove();
-    }
+  const goEntrance = () => {
+    setView('entrance');
+    removeAROverlay();
   };
 
-  return (
-    <div className="w-full h-full text-center">
-      <header className="w-full h-[5rem] bg-yellow-100">
-        <h1>
-          Example React component with{' '}
-          <a
-            href="https://github.com/hiukim/mind-ar-js"
-            target="_blank"
-            rel="noreferrer"
-          >
-            MindAR
-          </a>
-        </h1>
+  const goAR = () => {
+    setView('ar');
+  };
 
-        <div className="relative z-[1000] flex items-center justify-center gap-4">
-          {started === null && (
-            <button
-              type="button"
-              onClick={() => {
-                setStarted('three');
-              }}
-              className="bg-cyan-700 text-white font-bold px-4 py-2 rounded-md"
-            >
-              Start ThreeJS version
-            </button>
-          )}
-          {started !== null && (
-            <button
-              type="button"
-              onClick={handleStop}
-              className="bg-red-700 text-white font-bold px-4 py-2 rounded-md"
-            >
-              Stop
-            </button>
-          )}
-        </div>
-      </header>
+  if (view === 'entrance') {
+    return (
+      <EntranceView
+        guestName={guestName}
+        setGuestName={setGuestName}
+        goAR={goAR}
+      />
+    );
+  }
 
-      <main className="w-full h-[calc(100%-5rem)]">
-        {started === 'three' && (
-          <div className="relative mx-auto w-full h-full overflow-hidden">
-            <AR />
-          </div>
-        )}
-      </main>
-    </div>
-  );
+  return <ARView guestName={guestName} goEntrance={goEntrance} />;
 }
 
-export default App;
+function removeAROverlay() {
+  const overlays = document.querySelectorAll('.mindar-ui-overlay');
+  for (const element of overlays) {
+    element.remove();
+  }
+}
