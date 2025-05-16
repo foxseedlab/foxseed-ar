@@ -4,6 +4,7 @@ import useTextSetup from './useTextSetup';
 import useImageSetup from './useImageSetup';
 import Searching from './Searching';
 import Detail from './Detail';
+import useLog from './useLog';
 
 type Props = {
   guestName: string;
@@ -26,6 +27,8 @@ export default function View({ guestName }: Props) {
   const { setupText, showText, hideText } = useTextSetup(guestName, message);
   const { isTouching, setupImage, showImage, hideImage, handleTouch } =
     useImageSetup();
+
+  useLog(isMarkerFound, isTouching, guestName);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {

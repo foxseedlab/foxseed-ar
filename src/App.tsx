@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import EntranceView from './views/entrance/View';
 import ARView from './views/ar/View';
+import { sendEnterLog } from './log/log';
 
 const storageKeyGuestName = 'guest_name';
 
@@ -49,24 +50,4 @@ function removeAROverlay() {
   for (const element of overlays) {
     element.remove();
   }
-}
-
-function sendEnterLog(
-  guestName: string,
-  deviceInnerWidth: number,
-  deviceInnerHeight: number,
-  userAgent: string,
-) {
-  fetch('/enter', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      guestName,
-      deviceInnerWidth,
-      deviceInnerHeight,
-      userAgent,
-    }),
-  });
 }
