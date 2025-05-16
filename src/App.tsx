@@ -23,6 +23,12 @@ export default function Router() {
 
   const goAR = () => {
     setView('ar');
+    sendEnterLog(
+      guestName,
+      window.innerWidth,
+      window.innerHeight,
+      navigator.userAgent,
+    );
   };
 
   if (view === 'entrance') {
@@ -43,4 +49,24 @@ function removeAROverlay() {
   for (const element of overlays) {
     element.remove();
   }
+}
+
+function sendEnterLog(
+  guestName: string,
+  deviceInnerWidth: number,
+  deviceInnerHeight: number,
+  userAgent: string,
+) {
+  fetch('/enter', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      guestName,
+      deviceInnerWidth,
+      deviceInnerHeight,
+      userAgent,
+    }),
+  });
 }
