@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import EntranceView from './views/entrance/View';
 import ARView from './views/ar/View';
+import { sendEnterLog } from './log/log';
 
 const storageKeyGuestName = 'guest_name';
 
@@ -23,6 +24,12 @@ export default function Router() {
 
   const goAR = () => {
     setView('ar');
+    sendEnterLog(
+      guestName,
+      window.innerWidth,
+      window.innerHeight,
+      navigator.userAgent,
+    );
   };
 
   if (view === 'entrance') {
