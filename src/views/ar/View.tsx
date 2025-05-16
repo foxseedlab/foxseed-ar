@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import useARSetup from './useARSetup';
 import useTextSetup from './useTextSetup';
 import useImageSetup from './useImageSetup';
-import AROverlay from './AROverlay';
 import Searching from './Searching';
 import Detail from './Detail';
 
@@ -21,7 +20,6 @@ export default function View({ guestName }: Props) {
     setIsMarkerFound,
     isLoading,
     isScanning,
-    error,
     setIsScanning,
   } = useARSetup();
 
@@ -74,13 +72,6 @@ export default function View({ guestName }: Props) {
         isMarkerFound={isMarkerFound}
         isTouching={isTouching}
       />
-      {/* <AROverlay
-        isLoading={isLoading}
-        isScanning={isScanning}
-        error={error}
-        isMarkerFound={isMarkerFound}
-        isTouching={isTouching}
-      /> */}
     </>
   );
 }
