@@ -27,7 +27,11 @@
       "database_id": "369b4a34-645d-48a4-9be5-bb200ac56db7",
       "migrations_dir": "drizzle"
     }
-  ]
+  ],
+  "vars": {
+    "VITE_X_URL": "https://x.com/foxseed2314",
+    "VITE_SOURCE_CODE_URL": "https://github.com/foxseedlab/foxseed-ar"
+  },
 
 	/**
 	 * Smart Placement
@@ -46,7 +50,7 @@
 	 * Environment Variables
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
 	 */
-	// "vars": { "MY_VARIABLE": "production_value" },
+
 	/**
 	 * Note: Use secrets to store sensitive data.
 	 * https://developers.cloudflare.com/workers/configuration/secrets/

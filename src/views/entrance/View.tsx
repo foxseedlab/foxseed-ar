@@ -66,7 +66,7 @@ export default function View({ guestName, setGuestName, goAR }: Props) {
       <div className="w-full h-24 text-gray-400 border-t-2 border-gray-300 absolute bottom-0 flex flex-col items-center justify-center">
         <div className="mb-2 w-full text-xl flex flex-row items-center justify-center gap-2">
           <a
-            href="https://x.com/XXX"
+            href={import.meta.env.VITE_X_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="font-medium"
@@ -75,7 +75,7 @@ export default function View({ guestName, setGuestName, goAR }: Props) {
           </a>
           <span className="text-gray-300">/</span>
           <a
-            href="https://github.com/XXX"
+            href={import.meta.env.VITE_SOURCE_CODE_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="font-medium"
