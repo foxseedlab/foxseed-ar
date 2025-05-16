@@ -1,10 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import EntranceView from './views/entrance/View';
 import ARView from './views/ar/View';
 
+const storageKeyGuestName = 'guest_name';
+
 export default function Router() {
   const [view, setView] = useState<'entrance' | 'ar'>('entrance');
-  const [guestName, setGuestName] = useState('');
+  const [guestName, setGuestName] = useState(() => {
+    return localStorage.getItem(storageKeyGuestName) || '';
+  });
+
+  useEffect(() => {
+    if (guestName) {
+      localStorage.setItem(storageKeyGuestName, guestName);
+    }
+  }, [guestName]);
 
   const goEntrance = () => {
     setView('entrance');
