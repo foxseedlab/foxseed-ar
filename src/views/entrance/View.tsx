@@ -8,13 +8,16 @@ type Props = {
 
 export default function View({ guestName, setGuestName, goAR }: Props) {
   const playFoxseedHop = (element: HTMLElement) => {
-    element.classList.remove('animate-header-hop');
+    element.classList.remove('animate-foxseed-hop');
     void element.offsetWidth;
-    element.classList.add('animate-header-hop');
+    element.classList.add('animate-foxseed-hop');
   };
 
   const triggerFoxseedHop = (event: React.MouseEvent<HTMLButtonElement>) => {
-    playFoxseedHop(event.currentTarget);
+    const visual = event.currentTarget.querySelector('.foxseed-hero-image-visual');
+    if (visual instanceof HTMLElement) {
+      playFoxseedHop(visual);
+    }
   };
 
   return (
@@ -30,7 +33,7 @@ export default function View({ guestName, setGuestName, goAR }: Props) {
           <img
             src="/jumpout-foxseed.webp"
             alt="ふぉくしーどのロゴ"
-            className="block w-full pointer-events-none"
+            className="foxseed-hero-image-visual block w-full pointer-events-none"
             draggable={false}
           />
         </button>
