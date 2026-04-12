@@ -83,6 +83,10 @@ cp .env.sample .env
 ## 🔀 ブランチ戦略
 [GitHub Flow](https://docs.github.com/en/get-started/quickstart/github-flow) を採用しています。
 
+## 🚀 本番環境へのデプロイ
+mainブランチにマージすると、 Cloudflare Workers にデプロイするアクションが自動的に実行されます。
+デプロイ時に静的にHTMLを生成(SSG)し、 Cloudflare Workers のCDNで配信します。
+
 ## 🌠 ARマーカーについて
 [MindAR Image Targets Compiler](https://hiukim.github.io/mind-ar-js-doc/tools/compile/) を用いて、ふぉくしーどカードの被写体部分を画像マーカーにしています。 `Scale 4` でコンパイルを行いました。
 
