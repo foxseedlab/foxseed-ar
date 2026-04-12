@@ -1,8 +1,8 @@
-import { Hono } from 'hono';
-import { drizzle } from 'drizzle-orm/d1';
-import { characterClickLogs } from '../../src/db/schema';
-import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
+import { drizzle } from 'drizzle-orm/d1';
+import { Hono } from 'hono';
+import { z } from 'zod';
+import { characterClickLogs } from '../../src/db/schema';
 
 type Bindings = {
   DB: D1Database;

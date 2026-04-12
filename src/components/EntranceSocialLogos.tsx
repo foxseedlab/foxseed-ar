@@ -82,6 +82,7 @@ export function EntranceSocialLogos({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={link.ariaLabel}
+            onContextMenu={(e) => e.preventDefault()}
           >
             <div
               className={
@@ -99,7 +100,6 @@ export function EntranceSocialLogos({
                   'w-auto max-w-full object-contain object-center select-none',
                 ].join(' ')}
                 draggable={false}
-                onContextMenu={(e) => e.preventDefault()}
               />
             </div>
           </a>

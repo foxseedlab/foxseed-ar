@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import useARSetup from './useARSetup';
-import useTextSetup from './useTextSetup';
-import useImageSetup from './useImageSetup';
-import Searching from './Searching';
 import Detail from './Detail';
+import Searching from './Searching';
+import useARSetup from './useARSetup';
+import useImageSetup from './useImageSetup';
 import useLog from './useLog';
+import useTextSetup from './useTextSetup';
 
 type Props = {
   guestName: string;
@@ -30,7 +30,7 @@ export default function View({ guestName }: Props) {
 
   useLog(isMarkerFound, isTouching, guestName);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: MindAR scene and anchors are initialized once for the active session.
   useEffect(() => {
     if (!mindarThreeRef.current) return;
 
@@ -54,14 +54,16 @@ export default function View({ guestName }: Props) {
       hideImage();
     };
 
-    window.addEventListener('touchstart', (event) =>
-      handleTouch(event, camera),
-    );
+    const onTouchStart = (event: TouchEvent) => {
+      handleTouch(event, camera);
+    };
+
+    window.addEventListener('touchstart', onTouchStart);
 
     return () => {
-      window.removeEventListener('touchstart', (event) =>
-        handleTouch(event, camera),
-      );
+      anchor.onTargetFound = null;
+      anchor.onTargetLost = null;
+      window.removeEventListener('touchstart', onTouchStart);
     };
   }, [guestName]);
 

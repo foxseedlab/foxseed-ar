@@ -1,9 +1,42 @@
-import { useRef, useState } from 'react';
-import * as THREE from 'three';
 import * as TWEEN from '@tweenjs/tween.js';
 import type { Anchor } from 'mind-ar/dist/mindar-image-three.prod.js';
+import { useRef, useState } from 'react';
+import * as THREE from 'three';
 
 const characterImagePath = '/jumpout-foxseed.webp';
+
+function updateBaseImageMotion(imageGroup: THREE.Group, time: number) {
+  imageGroup.rotation.y = Math.sin(time) * 0.1;
+  imageGroup.position.y = Math.sin(time * 2) * 0.05;
+}
+
+function updateImageTilt(imageGroup: THREE.Group, time: number) {
+  if (time < 3) {
+    imageGroup.rotation.z = 0;
+    return;
+  }
+
+  const cycleTime = (time - 5) % 6;
+
+  if (cycleTime < 3) {
+    const progress = cycleTime / 3;
+    const targetRotation = Math.sin(progress * Math.PI * 4) * 0.135;
+    imageGroup.rotation.z += (targetRotation - imageGroup.rotation.z) * 0.15;
+    return;
+  }
+
+  imageGroup.rotation.z += (0 - imageGroup.rotation.z) * 0.08;
+}
+
+function animateImageGroup(imageGroup: THREE.Group, time: number) {
+  if (!imageGroup.visible) {
+    imageGroup.rotation.z = 0;
+    return;
+  }
+
+  updateBaseImageMotion(imageGroup, time);
+  updateImageTilt(imageGroup, time);
+}
 
 export default function useImageSetup() {
   const imageRef = useRef<THREE.Group | null>(null);
@@ -49,32 +82,7 @@ export default function useImageSetup() {
       anchor.group.add(imageGroup);
 
       const animate = () => {
-        if (imageGroup.visible) {
-          imageGroup.rotation.y = Math.sin(Date.now() * 0.001) * 0.1;
-          imageGroup.position.y = Math.sin(Date.now() * 0.002) * 0.05;
-
-          const time = Date.now() * 0.001;
-          if (time < 3) {
-            imageGroup.rotation.z = 0;
-            return;
-          }
-
-          const cycleTime = (time - 5) % 6;
-
-          if (cycleTime < 3) {
-            const progress = cycleTime / 3;
-            const piipiiRotation = Math.sin(progress * Math.PI * 4) * 0.135;
-
-            const currentRotation = imageGroup.rotation.z;
-            const targetRotation = piipiiRotation;
-            imageGroup.rotation.z += (targetRotation - currentRotation) * 0.15;
-          } else {
-            const currentRotation = imageGroup.rotation.z;
-            imageGroup.rotation.z += (0 - currentRotation) * 0.08;
-          }
-        } else {
-          imageGroup.rotation.z = 0;
-        }
+        animateImageGroup(imageGroup, Date.now() * 0.001);
       };
 
       renderer.setAnimationLoop(() => {

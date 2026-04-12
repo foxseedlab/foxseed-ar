@@ -83,6 +83,12 @@ cp .env.sample .env
 ## 🔀 ブランチ戦略
 [GitHub Flow](https://docs.github.com/en/get-started/quickstart/github-flow) を採用しています。
 
+## 🚀 本番環境へのデプロイ
+本番環境へ反映する際は、ローカル環境で `npm run deploy` を実行します。
+デプロイ時に静的に HTML を生成(SSG)し、Cloudflare Workers のCDNで配信します。
+`mind-ar` が依存するネイティブモジュールの都合で、Cloudflare側のビルド環境では依存インストールが不安定です。
+そのため、Cloudflare上ではビルドせず、ローカルでビルドしてからデプロイします。
+
 ## 🌠 ARマーカーについて
 [MindAR Image Targets Compiler](https://hiukim.github.io/mind-ar-js-doc/tools/compile/) を用いて、ふぉくしーどカードの被写体部分を画像マーカーにしています。 `Scale 4` でコンパイルを行いました。
 
