@@ -1,12 +1,28 @@
 @import "tailwindcss";
 
+@theme {
+  --color-foxseed-50: #f5faf3;
+  --color-foxseed-100: #e9f4e4;
+  --color-foxseed-200: #d2e9c9;
+  --color-foxseed-300: #badcad;
+  --color-foxseed-400: #82bb6d;
+  --color-foxseed-500: #609e49;
+  --color-foxseed-600: #4c8138;
+  --color-foxseed-700: #3d672e;
+  --color-foxseed-800: #345229;
+  --color-foxseed-900: #2b4423;
+  --color-foxseed-950: #212b1a;
+  --color-foxseed-bg: var(--color-foxseed-300);
+}
+
 html,
 body,
 #app {
-  font-family: 'Pretendard JP Variable', 'Helvetica Neue', Helvetica, Arial,
-    'Segoe UI', 'Hiragino Sans', 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic ProN',
-    'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo, 'Yu Gothic Medium', sans-serif;
-  @apply w-[100dvw] h-[100dvh] overflow-hidden;
+  font-family:
+    "Pretendard JP Variable", "Helvetica Neue", Helvetica, Arial,
+    "Segoe UI", "Hiragino Sans", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN",
+    "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, "Yu Gothic Medium", sans-serif;
+  @apply w-dvw h-dvh overflow-x-hidden;
 }
 
 video {
@@ -21,9 +37,9 @@ video {
 }
 
 @font-face {
-	font-family: 'Pretendard JP Variable';
-	font-weight: 45 920;
-	font-style: normal;
-	font-display: swap;
-	src: url('/PretendardJPVariable.woff2') format('woff2-variations');
+  font-family: "Pretendard JP Variable";
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url("/PretendardJPVariable.woff2") format("woff2-variations");
 }

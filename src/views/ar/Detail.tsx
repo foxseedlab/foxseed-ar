@@ -39,7 +39,7 @@ export default function Detail({
 function SearchingCard() {
   return (
     <div className="text-center">
-      <h2 className="text-xl font-black">
+      <h2 className="text-xl font-bold">
         ふぉくしーどカードの
         <br />
         表面を映してください
@@ -131,7 +131,7 @@ function FoundCard({ isTouching }: { isTouching: boolean }) {
   return (
     <div>
       <h2 className="-mt-4 -ml-4">
-        <span className="px-4 py-1 w-auto text-green-950 font-bold bg-[#badcad] rounded-xl">
+        <span className="px-4 py-1 w-auto text-green-950 font-bold bg-foxseed-bg rounded-lg">
           ふぉくしーど
         </span>
       </h2>
