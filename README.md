@@ -36,6 +36,21 @@ cp .env.sample .env
 | `npm run d1:migrate` | Drizzleのマイグレーションを実行 |
 | `npm run cf-typegen` | Cloudflare Workers の型定義を生成 |
 
+## ⚠️ 依存関係の更新について
+
+`mind-ar@1.2.5` に強く依存しており、`vite` / `three` の更新で AR 表示が壊れます。
+
+### vite@8 は使えません
+
+- AR マーカーをかざしてもコンテンツが表示されないです。
+- `mind-ar` が参照する `fs` / `util` / `buffer` の browser externalize 警告が発生します。
+- 原因: vite@8 は内部が Rolldown/Oxc ベースに変わり、`mind-ar` が内部で抱える TensorFlow / MediaPipe 系の依存解決が崩れるためです。
+- `@vitejs/plugin-react` も `vite` のメジャーに依存するため、`vite` 単体の更新・ダウングレードは不可です。
+
+### three@0.162.0+ は使えません
+
+- `mind-ar` が `sRGBEncoding`（削除済み API）を import しておりビルドエラーになります。
+
 ## 📁 リポジトリ構造
 ```sh
 /
