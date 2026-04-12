@@ -39,13 +39,25 @@ export default function Detail({
 function SearchingCard() {
   return (
     <div className="text-center">
-      <h2 className="text-xl font-bold">
+      {/* <h2 className="text-xl font-bold">
         ふぉくしーどカードの
         <br />
         表面を映してください
-      </h2>
-      <div className="mt-8 text-white/75">
-        カードから20cmほど離してスマホを動かしてください
+      </h2> */}
+      <div className="-mt-3 flex flex-row items-center justify-center gap-6">
+        <img
+          src="/compatibility-surface-guide.svg"
+          alt="ふぉくしーどカード"
+          className="w-30"
+        />
+        <div className="mt-3 text-left">
+          ふぉくしーどカードの表面を映してください。
+        </div>
+      </div>
+      <div className="mt-5 text-white/75">
+        カードから20cmほど離して
+        <br />
+        スマホを動かしてください
       </div>
     </div>
   );
