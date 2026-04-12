@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import EntranceView from './views/entrance/View';
-import ARView from './views/ar/View';
+import { useEffect, useState } from 'react';
 import { sendEnterLog } from './log/log';
+import ARView from './views/ar/View';
+import EntranceView from './views/entrance/View';
 
 const storageKeyGuestName = 'guest_name';
 

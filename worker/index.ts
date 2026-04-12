@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
+import characterClickApp from './api/character_click';
 import enterLogApp from './api/enter';
 import markerFoundApp from './api/marker_found';
-import characterClickApp from './api/character_click';
 
 const app = new Hono();
 

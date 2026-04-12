@@ -25,14 +25,22 @@ body,
   @apply w-dvw h-dvh overflow-x-hidden;
 }
 
-video {
+#app video {
+  /* biome-ignore lint/complexity/noImportantStyles: MindAR injects inline width/height/position styles onto the camera <video>. */
   width: 100% !important;
+  /* biome-ignore lint/complexity/noImportantStyles: MindAR injects inline width/height/position styles onto the camera <video>. */
   height: 100% !important;
+  /* biome-ignore lint/complexity/noImportantStyles: MindAR injects inline width/height/position styles onto the camera <video>. */
   object-fit: cover !important;
+  /* biome-ignore lint/complexity/noImportantStyles: MindAR injects inline width/height/position styles onto the camera <video>. */
   image-rendering: auto !important;
+  /* biome-ignore lint/complexity/noImportantStyles: MindAR injects inline width/height/position styles onto the camera <video>. */
   position: absolute !important;
+  /* biome-ignore lint/complexity/noImportantStyles: MindAR injects inline width/height/position styles onto the camera <video>. */
   top: 0 !important;
+  /* biome-ignore lint/complexity/noImportantStyles: MindAR injects inline width/height/position styles onto the camera <video>. */
   left: 0 !important;
+  /* biome-ignore lint/complexity/noImportantStyles: MindAR injects inline width/height/position styles onto the camera <video>. */
   z-index: -1 !important;
 }
 

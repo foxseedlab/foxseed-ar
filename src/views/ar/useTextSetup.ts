@@ -1,10 +1,10 @@
+import * as TWEEN from '@tweenjs/tween.js';
+import type { Anchor } from 'mind-ar/dist/mindar-image-three.prod.js';
 import { useRef } from 'react';
 import * as THREE from 'three';
+import type { Font } from 'three/examples/jsm/Addons';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
-import * as TWEEN from '@tweenjs/tween.js';
-import type { Font } from 'three/examples/jsm/Addons';
-import type { Anchor } from 'mind-ar/dist/mindar-image-three.prod.js';
 
 const jsonFontPath = '/font-for-label.json';
 const textColor = 0xffffff;
@@ -44,7 +44,6 @@ export default function useTextSetup(guestName: string, message: string) {
       const nameTextGeometry = new TextGeometry(guestName + honorific, {
         font: font,
         size: 0.2,
-        // @ts-ignore
         height: 0.05,
         curveSegments: 12,
         bevelEnabled: true,
@@ -78,7 +77,6 @@ export default function useTextSetup(guestName: string, message: string) {
       const msgTextGeometry = new TextGeometry(message, {
         font: font,
         size: 0.2,
-        // @ts-ignore
         height: 0.05,
         curveSegments: 12,
         bevelEnabled: true,

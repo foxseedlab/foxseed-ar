@@ -1,9 +1,38 @@
-import { useEffect, useRef, useState } from 'react';
-import { MindARThree } from 'mind-ar/dist/mindar-image-three.prod.js';
-import * as THREE from 'three';
 import * as TWEEN from '@tweenjs/tween.js';
+import { MindARThree } from 'mind-ar/dist/mindar-image-three.prod.js';
+import { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
 
 const markerPath = '/foxseed-card.mind';
+
+function stopMediaTracks(stream: MediaStream | null | undefined) {
+  if (!stream) return;
+
+  for (const track of stream.getTracks()) {
+    track.stop();
+  }
+}
+
+function cleanupMindAR(
+  mindarThree: MindARThree | null,
+  renderer: THREE.WebGLRenderer,
+) {
+  renderer.setAnimationLoop(null);
+
+  if (!mindarThree) return;
+
+  try {
+    stopMediaTracks(
+      mindarThree.video?.srcObject as MediaStream | null | undefined,
+    );
+
+    if (mindarThree.controller) {
+      mindarThree.stop();
+    }
+  } catch (error) {
+    console.warn('Error stopping MindAR:', error);
+  }
+}
 
 export default function useARSetup() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -79,26 +108,8 @@ export default function useARSetup() {
     });
 
     return () => {
-      if (mindarThreeRef.current) {
-        renderer.setAnimationLoop(null);
-        try {
-          if (mindarThreeRef.current.video?.srcObject) {
-            const tracks = (
-              mindarThreeRef.current.video.srcObject as MediaStream
-            ).getTracks();
-            for (const track of tracks) {
-              track.stop();
-            }
-          }
-
-          if (mindarThreeRef.current.controller) {
-            mindarThreeRef.current.stop();
-          }
-        } catch (error) {
-          console.warn('Error stopping MindAR:', error);
-        }
-        mindarThreeRef.current = null;
-      }
+      cleanupMindAR(mindarThreeRef.current, renderer);
+      mindarThreeRef.current = null;
     };
   }, []);
 

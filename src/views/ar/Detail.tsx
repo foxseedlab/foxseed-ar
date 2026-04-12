@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TypingEffect } from '../../components/TypingEffect';
 
 type Props = {
@@ -8,6 +8,40 @@ type Props = {
   isMarkerFound: boolean;
   isTouching: boolean;
 };
+
+const initialMessage = 'やったー！！';
+const initialAppendMessage = 'わざわざ見に来てくれてありがとうね！';
+const appendMessages = [
+  'やあ！見に来てくれて助かります。人見知りだから自分から話しかけるの苦手なんだよね。',
+  'お腹ぺこぺこだよ〜おやつちょうだい！特にシュークリームがあると嬉しいな…',
+  'もっとふわふわ撫でてほしいな〜恥ずかしいけど我慢できない！',
+  'ねむねむ…お昼寝タイム？一緒におねんねしよう・・・！',
+  'くすぐりはやめてｗｗｗ後で覚えておいてよｗｗｗ',
+  'きょうはいい風が吹いてるね。葉っぱが踊っているみたい！',
+  '僕の尻尾、触ってみて！ふわふわで幸せ気分になれるよ！',
+  'この世界、キラキラしててすごいね。君と見るともっとキラキラ！',
+  '実は僕、ハンバーガーも好きなんだ！いつかアメリカでアメリカンなハンバーガーも食べてみたい！',
+  'ずっと君のこと見守ってるよ。緊張しちゃうけど、そばにいたいんだ！',
+  '褒められるとアウトプットよくなるタイプ。単純って言わないで！',
+  'たまには木の上でひなたぼっこしよう？ぽかぽか気持ちいいよ。',
+  'ふぉくしーどパワー、解放！元気全開で行こう！',
+  '短く「ふぉく」って呼んでもらえると嬉しいな！',
+  '今日も一日お疲れさま！ゆっくり休んでね！',
+  'ここだけの話、魔法を使えるんだ。信じてくれる？',
+  'また遊びに来てくれる？待ってるよ…ドキドキしちゃうけど',
+  '新しい葉っぱ、見つけたんだ！一緒に集めに行こう？',
+  '寝相はわるい。隣で寝てた人が朝になると床にいたことあるんよね。2,3回くらいはあった。',
+  '今日はどこに連れてってくれるの？わくわくしちゃう！',
+  '一緒にかくれんぼしようよ！見つけたらぎゅーってしてね',
+  'おなかもちもちなケモノが好き。かわいいは正義だあ！',
+  'あまり知られていないかもだけど、僕はイヌじゃなくてキツネなんだ。',
+  '人見知りだけど、本当はおしゃべり大好きなんだ…一歩ずつ慣れていこうね。',
+  '僕が落ち込んでるときは放っておいてほしい・・・。時間経つと勝手に戻ります。',
+  'もっと着ぐるみと交流してみたいなぁ…',
+  '6時間は寝ないとスペック出ない。おねんねは大事！',
+  '作業通話は好き。でも考える系のタスクは一人でじっくりやりたい派かなあ。',
+  '気軽に接してくれるのがいちばん嬉しい。構えないでほしい！',
+];
 
 export default function Detail({
   isLoading,
@@ -39,11 +73,6 @@ export default function Detail({
 function SearchingCard() {
   return (
     <div className="text-center">
-      {/* <h2 className="text-xl font-bold">
-        ふぉくしーどカードの
-        <br />
-        表面を映してください
-      </h2> */}
       <div className="-mt-3 flex flex-row items-center justify-center gap-6">
         <img
           src="/compatibility-surface-guide.svg"
@@ -64,46 +93,9 @@ function SearchingCard() {
 }
 
 function FoundCard({ isTouching }: { isTouching: boolean }) {
-  const initialMessage = 'やったー！！';
   const [message, setMessage] = useState(initialMessage);
   const [isFirstMessage, setIsFirstMessage] = useState(true);
-  const prevMessageRef = useRef(initialMessage);
-
   const hasTouchedRef = useRef(false);
-
-  const initialAppendMessage = 'わざわざ見に来てくれてありがとうね！';
-
-  const appendMessages = [
-    'やあ！見に来てくれて助かります。人見知りだから自分から話しかけるの苦手なんだよね。',
-    'お腹ぺこぺこだよ〜おやつちょうだい！特にシュークリームがあると嬉しいな…',
-    'もっとふわふわ撫でてほしいな〜恥ずかしいけど我慢できない！',
-    'ねむねむ…お昼寝タイム？一緒におねんねしよう・・・！',
-    'くすぐりはやめてｗｗｗ後で覚えておいてよｗｗｗ',
-    'きょうはいい風が吹いてるね。葉っぱが踊っているみたい！',
-    '僕の尻尾、触ってみて！ふわふわで幸せ気分になれるよ！',
-    'この世界、キラキラしててすごいね。君と見るともっとキラキラ！',
-    '実は僕、ハンバーガーも好きなんだ！いつかアメリカでアメリカンなハンバーガーも食べてみたい！',
-    'ずっと君のこと見守ってるよ。緊張しちゃうけど、そばにいたいんだ！',
-    '褒められるとアウトプットよくなるタイプ。単純って言わないで！',
-    'たまには木の上でひなたぼっこしよう？ぽかぽか気持ちいいよ。',
-    'ふぉくしーどパワー、解放！元気全開で行こう！',
-    '短く「ふぉく」って呼んでもらえると嬉しいな！',
-    '今日も一日お疲れさま！ゆっくり休んでね！',
-    'ここだけの話、魔法を使えるんだ。信じてくれる？',
-    'また遊びに来てくれる？待ってるよ…ドキドキしちゃうけど',
-    '新しい葉っぱ、見つけたんだ！一緒に集めに行こう？',
-    '寝相はわるい。隣で寝てた人が朝になると床にいたことあるんよね。2,3回くらいはあった。',
-    '今日はどこに連れてってくれるの？わくわくしちゃう！',
-    '一緒にかくれんぼしようよ！見つけたらぎゅーってしてね',
-    'おなかもちもちなケモノが好き。かわいいは正義だあ！',
-    'あまり知られていないかもだけど、僕はイヌじゃなくてキツネなんだ。',
-    '人見知りだけど、本当はおしゃべり大好きなんだ…一歩ずつ慣れていこうね。',
-    '僕が落ち込んでるときは放っておいてほしい・・・。時間経つと勝手に戻ります。',
-    'もっと着ぐるみと交流してみたいなぁ…',
-    '6時間は寝ないとスペック出ない。おねんねは大事！',
-    '作業通話は好き。でも考える系のタスクは一人でじっくりやりたい派かなあ。',
-    '気軽に接してくれるのがいちばん嬉しい。構えないでほしい！',
-  ];
 
   useEffect(() => {
     if (!isFirstMessage) return;
@@ -114,15 +106,10 @@ function FoundCard({ isTouching }: { isTouching: boolean }) {
     return () => clearTimeout(timer);
   }, [isFirstMessage]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!isTouching) return;
 
-    // タッチフラグを立てる
     hasTouchedRef.current = true;
-    // 切り替え前のメッセージを保存
-    prevMessageRef.current = message;
-
     setMessage('くすぐったいよー');
   }, [isTouching]);
 

@@ -14,7 +14,9 @@ export default function View({ guestName, setGuestName, goAR }: Props) {
   };
 
   const triggerFoxseedHop = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const visual = event.currentTarget.querySelector('.foxseed-hero-image-visual');
+    const visual = event.currentTarget.querySelector(
+      '.foxseed-hero-image-visual',
+    );
     if (visual instanceof HTMLElement) {
       playFoxseedHop(visual);
     }
@@ -22,7 +24,7 @@ export default function View({ guestName, setGuestName, goAR }: Props) {
 
   return (
     <main className="flex flex-col items-center relative">
-      <div className="-mt-210 w-280 h-280 rounded-full bg-foxseed-bg flex flex-col justify-end overflow-hidden">
+      <div className="-mt-222 w-280 h-280 rounded-full bg-foxseed-bg flex flex-col justify-end overflow-hidden">
         <button
           type="button"
           className="foxseed-hero-image w-80 mx-auto p-0 border-0 bg-transparent cursor-pointer select-none block"

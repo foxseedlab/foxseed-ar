@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { motion, useInView } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 
 type Props = {
   text: string;
@@ -14,30 +14,38 @@ export function TypingEffect({
   delay = 0.1,
   className,
 }: Props) {
-  const ref = React.useRef(null);
-  const [isVisible, setIsVisible] = React.useState(false);
+  const ref = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
   const isInView = useInView(ref, { once: false });
+  const characters = Array.from(text);
+  const characterCounts = new Map<string, number>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isInView) {
       setIsVisible(true);
     } else {
       setIsVisible(false);
     }
-  }, [isInView, text]);
+  }, [isInView]);
 
   return (
     <div ref={ref} className={className}>
-      {text.split('').map((letter, index) => (
-        <motion.span
-          key={`${text}-${index}`}
-          initial={{ opacity: 0 }}
-          animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration, delay: index * delay }}
-        >
-          {letter}
-        </motion.span>
-      ))}
+      {characters.map((letter, index) => {
+        const count = (characterCounts.get(letter) ?? 0) + 1;
+        const key = `${text}-${letter}-${count}`;
+        characterCounts.set(letter, count);
+
+        return (
+          <motion.span
+            key={key}
+            initial={{ opacity: 0 }}
+            animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ duration, delay: index * delay }}
+          >
+            {letter}
+          </motion.span>
+        );
+      })}
     </div>
   );
 }
