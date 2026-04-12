@@ -7,16 +7,33 @@ type Props = {
 };
 
 export default function View({ guestName, setGuestName, goAR }: Props) {
+  const playFoxseedHop = (element: HTMLElement) => {
+    element.classList.remove('animate-header-hop');
+    void element.offsetWidth;
+    element.classList.add('animate-header-hop');
+  };
+
+  const triggerFoxseedHop = (event: React.MouseEvent<HTMLButtonElement>) => {
+    playFoxseedHop(event.currentTarget);
+  };
+
   return (
     <main className="flex flex-col items-center relative">
       <div className="-mt-210 w-280 h-280 rounded-full bg-foxseed-bg flex flex-col justify-end overflow-hidden">
-        <img
-          src="/jumpout-foxseed.webp"
-          alt="logo"
-          className="w-80 mx-auto select-none"
-          draggable="false"
+        <button
+          type="button"
+          className="foxseed-hero-image w-80 mx-auto p-0 border-0 bg-transparent cursor-pointer select-none block"
           onContextMenu={(e) => e.preventDefault()}
-        />
+          onMouseEnter={triggerFoxseedHop}
+          onClick={triggerFoxseedHop}
+        >
+          <img
+            src="/jumpout-foxseed.webp"
+            alt="ふぉくしーどのロゴ"
+            className="block w-full pointer-events-none"
+            draggable={false}
+          />
+        </button>
       </div>
 
       <div className="px-4 mt-8 max-w-[500px] w-full text-center">
