@@ -32,7 +32,7 @@
 		"@types/react": "^19.0.10",
 		"@types/react-dom": "^19.0.4",
 		"@types/three": "^0.176.0",
-		"@vitejs/plugin-react-swc": "^4.3.0",
+		"@vitejs/plugin-react": "^6.0.1",
 		"dotenv": "^16.5.0",
 		"drizzle-kit": "^0.31.10",
 		"globals": "^16.0.0",
